@@ -8,3 +8,7 @@ ADMIN=admin@example.com
 
 # location of sites (no trailing slash)
 SITESTORE=/path/to/your/vhost/root/dir
+
+# sub-directory under $SITESTORE where XML files are stored
+# (no preceeding or trailing slashes)
+XMLFILES=htdocs/subfolder/xml_files

@@ -4,7 +4,6 @@ source ~/scripts/config.sh
 
 SITELIST=($(ls -lh $SITESTORE | awk '{print $9}'))
 
-XMLFILES=public/wp-content/uploads/xml_test
 
 for SITE in ${SITELIST[@]}; do
 	if ! $(cd $SITESTORE/$SITE/$XMLFILES 2>/dev/null); then
