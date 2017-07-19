@@ -21,10 +21,33 @@ for SITE in ${SITELIST[@]}; do
 	fi
 
 	TOTALENTRIES=$(ls -F $SITESTORE/$SITE/$XMLFILES | grep -v / | wc -l)
+	# continue if 0 XML entries found
+	if [[ "$TOTALENTRIES" -eq 0 ]]; then
+		printf "\e[33m\e[1mNOTE:\e[0m $SITE has $TOTALENTRIES XML entries. Continuing...\n"
+		continue
+	fi
+
 	printf "\e[32m\e[1mSUCCESS:\e[0m $SITE has $TOTALENTRIES XML form entries.\n"
 	cd $SITESTORE/$SITE/$XMLFILES
 	FILELIST=($(ls --hide=.htaccess -lh . | awk '{print $9}'))
+
+	PUTCMD=''
+
 	for FILE in ${FILELIST[@]}; do
-		printf "Found $FILE\n"
+		PUTCMD+="put $FILE"$'\n'
 	done
+
+	printf "Initiating FTP..."$'\n'
+
+	lftp -u $FTPSUSER,$FTPSPASS $FTPSSERVER << EOF
+$PUTCMD
+bye
+EOF
+
+	printf "FTP Complete"$'\n'
+
+	for FILE in ${FILELIST[@]}; do
+		unlink $FILE
+	done
+
 done
