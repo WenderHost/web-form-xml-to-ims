@@ -1,5 +1,10 @@
 #!/usr/bin/env bash
 
+# FTPS credentials
+FTPSSERVER=192.0.2.0
+FTPSUSER=username
+FTPSPASS=PaSsWoRd
+
 # name of this server
 SERVER=web1.example.com
 
