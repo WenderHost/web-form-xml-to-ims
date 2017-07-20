@@ -1,5 +1,26 @@
 #!/usr/bin/env bash
 
+DIVIDER="----------------------------------------"
+echo "$DIVIDER"$'\n'"Initiating XML transfer..."
+
+# by default, we won't delete the files after FTP
+DELETE=false
+
+# process arguments
+while getopts ":d" opt; do
+	case $opt in
+		d)
+			# delete files after FTP
+			printf "INFO: \e[33m\e[1mDELETE\e[0m files after FTP is ON.\n" >&2
+			DELETE=true
+			;;
+		\?)
+			echo "Invalid option: -$OPTARG" >&2
+			exit 1
+			;;
+	esac
+done
+
 # Get current directory (not bulletproof, source: http://www.ostricher.com/2014/10/the-right-way-to-get-the-directory-of-a-bash-script/)
 PWD="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
@@ -46,8 +67,11 @@ EOF
 
 	printf "FTP Complete"$'\n'
 
-	for FILE in ${FILELIST[@]}; do
-		unlink $FILE
-	done
+	# delete files after FTP
+	if [ "$DELETE" = true ] ; then
+		for FILE in ${FILELIST[@]}; do
+			unlink $FILE
+		done
+	fi
 
 done
