@@ -16,6 +16,15 @@ This is a [Bash](https://en.wikipedia.org/wiki/Bash_(Unix_shell)) script which m
 
 - `-d` delete XML files after FTP
 
+## lftp Must Be Installed on Your Server
+
+In addition to installing the script, `lftp` must be installed on your server. Once you have `lftp` installed, if you get a "Fatal error: Certificate verification: Not trusted", you can turn off certificate verification by adding a `~/.lftprc` with the following settings:
+
+```
+set ssl:verify-certificate false
+set ftp:ssl-protect-data true
+```
+
 ## Changelog
 
 ### 1.0.0
