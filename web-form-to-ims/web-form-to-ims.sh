@@ -41,7 +41,7 @@ for SITE in ${SITELIST[@]}; do
 		continue
 	fi
 
-	TOTALENTRIES=$(ls -F $SITESTORE/$SITE/$XMLFILES | grep -v / | wc -l)
+	TOTALENTRIES=$(find $SITESTORE/$SITE/$XMLFILES -type f \( ! -iname ".htaccess" \) | wc -l)
 	# continue if 0 XML entries found
 	if [[ "$TOTALENTRIES" -eq 0 ]]; then
 		printf "\e[33m\e[1mNOTE:\e[0m $SITE has $TOTALENTRIES XML entries. Continuing...\n"
@@ -50,28 +50,14 @@ for SITE in ${SITELIST[@]}; do
 
 	printf "\e[32m\e[1mSUCCESS:\e[0m $SITE has $TOTALENTRIES XML form entries.\n"
 	cd $SITESTORE/$SITE/$XMLFILES
-	FILELIST=($(ls --hide=.htaccess -lh . | awk '{print $9}'))
-
-	PUTCMD=''
-
-	for FILE in ${FILELIST[@]}; do
-		PUTCMD+="put $FILE"$'\n'
-	done
 
 	printf "Initiating FTP..."$'\n'
 
 	lftp -u $FTPSUSER,$FTPSPASS $FTPSSERVER << EOF
-$PUTCMD
+mirror -R --Remove-source-files $SITESTORE/$SITE/$XMLFILES /
 bye
 EOF
 
 	printf "FTP Complete"$'\n'
-
-	# delete files after FTP
-	if [ "$DELETE" = true ] ; then
-		for FILE in ${FILELIST[@]}; do
-			unlink $FILE
-		done
-	fi
 
 done
